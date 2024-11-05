@@ -8,4 +8,4 @@ hay(names.name2)
 hay(names.name3)
 hay(names.name4)
 
-console.log('alternative-flavor', subs)
+console.log(subs)

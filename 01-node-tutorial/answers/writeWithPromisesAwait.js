@@ -1,4 +1,6 @@
 const { writeFile, readFile } = require("fs").promises;
+const filepath = "./temp.txt"
+
 
 async function writer() {
     try {
@@ -12,3 +14,19 @@ async function writer() {
 }
 
 writer();
+
+async function reader() {
+    try {
+        const data = await readFile('temp.txt', 'utf8')
+        console.log('Content', data)
+    } catch(error) {
+        console.error("Error reading to file:", error)
+    }
+}
+
+async function readWrite() {
+    await writer();
+    await reader();
+  }
+
+  readWrite()

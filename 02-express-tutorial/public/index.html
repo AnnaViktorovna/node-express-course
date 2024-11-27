@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <h1>Node.js</h1>
+        <input type="button" id="btn" value="products" />
+        <div id="products"></div>
+    </head>
+    <body>
+        <script>
+            document.getElementById("btn").addEventListener("click", () => {
+                fetch("/api/v1/products")
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(
+                                `HTTP error. status: ${response.status}`
+                            );
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        const div = document.getElementById("products");
+                        div.innerHTML = "";
+
+                        data.forEach((product) => {
+                            const productDiv = document.createElement("div");
+                            productDiv.innerHTML = `<p>${product.id}</p>
+          <h3>${product.name}</h3>
+          <img src="${product.image}" alt="${product.name}">
+          <p>Price: $${product.price}</p>
+          <p>${product.desc}</p>
+        `;
+                            div.appendChild(productDiv);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            });
+        </script>
+    </body>
+</html>

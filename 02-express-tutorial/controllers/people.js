@@ -49,6 +49,7 @@ const deletePerson = (req, res) => {
     const newPeople = people.filter(
         (person) => person.id !== Number(req.params.id)
     );
+    people = newPeople;
 
     return res.status(200).json({ success: true, data: newPeople });
 };

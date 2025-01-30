@@ -4,6 +4,7 @@ const { BadRequest, Unauthenticated } = require("../errors");
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const {connection} = require("mongoose");
 
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -26,22 +27,23 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email || !password) {
+  if (!username || !password) {
     throw new BadRequest("Please provide email and password");
   }
+  const usersCollection = connection.db.collection('Users');
+  const user = await usersCollection.findOne({ username });
 
-  const user = await User.findOne({ email });
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
     throw new Unauthenticated("Invalid username or password");
   }
 
-  const id = user._id;
+  const id = user._id.toString();
   // Генерация токена внутри функции login
-  const token = jwt.sign({ email, id }, process.env.JWT_SECRET, { expiresIn: "24h" });
+  const token = jwt.sign({ username, id }, process.env.JWT_SECRET, { expiresIn: "24h" });
 
   console.log("Generated Token:", token); // Логируем сгенерированный токен
   res.status(200).json({ msg: "user login", token });

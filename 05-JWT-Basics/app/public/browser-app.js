@@ -6,6 +6,12 @@ const resultDOM = document.querySelector('.result')
 const btnDOM = document.querySelector('#data')
 const tokenDOM = document.querySelector('.token')
 
+
+const api = axios.create({
+  baseURL: "http://localhost:3005", // Replace with your actual API URL
+});
+
+
 formDOM.addEventListener('submit', async (e) => {
   formAlertDOM.classList.remove('text-success')
   tokenDOM.classList.remove('text-success')
@@ -15,7 +21,7 @@ formDOM.addEventListener('submit', async (e) => {
   const password = passwordInputDOM.value
 
   try {
-    const { data } = await axios.post('/api/v1/login', { username, password })
+    const { data } = await api.post('/api/v1/login', { username, password })
 
     formAlertDOM.style.display = 'block'
     formAlertDOM.textContent = data.msg
@@ -44,7 +50,7 @@ formDOM.addEventListener('submit', async (e) => {
 btnDOM.addEventListener('click', async () => {
   const token = localStorage.getItem('token')
   try {
-    const { data } = await axios.get('/api/v1/dashboard', {
+    const { data } = await api.get('/api/v1/dashboard', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -7,21 +7,22 @@ const User = require("../models/user");
 const {connection} = require("mongoose");
 
 const signup = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, password } = req.body;
   console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
-  if (!name || !password || !email) {
-    throw new BadRequest("Please provide email and password");
+  if (!username || !password ) {
+    throw new BadRequest("Please provide username and password");
   }
+  console.log(username,password)
 
-  const existingUser = await User.findOne({ email });
-
+  const existingUser = await User.findOne({  username});
+console.log(existingUser)
   if (existingUser) {
     throw new BadRequest("Email is already in use");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ name, email, password: hashedPassword });
+  const newUser = await User.create({ username,  password: hashedPassword });
 
   res.status(200).json({ msg: "user created", newUser });
 };
@@ -30,10 +31,11 @@ const login = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    throw new BadRequest("Please provide email and password");
+    throw new BadRequest("Please provide username and password");
   }
-  const usersCollection = connection.db.collection('Users');
-  const user = await usersCollection.findOne({ username });
+  // const usersCollection = connection.db.collection('Users');
+  console.log("Searching for user:", username);
+  const user = await User.findOne({ username });
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -51,7 +53,7 @@ const login = async (req, res) => {
 
 const hello = async (req, res) => {
   const luckyNumber = Math.floor(Math.random() * 100);
-  const user = await User.findOne({ email: req.user.email });
+  const user = await User.findOne({ name: req.user.name });
   res.status(200).json({
     msg: `Hello, ${user.name}`,
     secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,

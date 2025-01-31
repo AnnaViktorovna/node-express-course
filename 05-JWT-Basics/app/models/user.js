@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const userSignupSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "User name must be provided."],
-  },
   username: {
     type: String,
     trim: true,

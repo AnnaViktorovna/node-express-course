@@ -8,7 +8,7 @@ const tokenDOM = document.querySelector('.token')
 
 
 const api = axios.create({
-  baseURL: "http://localhost:3005", // Replace with your actual API URL
+  baseURL: "http://localhost:3000", // Replace with your actual API URL
 });
 
 
